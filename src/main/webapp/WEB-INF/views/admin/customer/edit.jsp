@@ -289,6 +289,22 @@
     function updateTransactionType(id){
         $('#transactionTypeModal').modal();
         $('#id').val(id);
+        loadTransactionDetail(id);
+    }
+
+    function loadTransactionDetail(id){
+        $.ajax({
+            type: "GET",
+            url: "${customerAPI}/transaction/" + id,
+            dataType: "JSON", // Kieu tra ve la json tu server
+            success: function(response){
+                $('#transactionDetail').val(response.note);
+            },
+            error: function(response){
+                console.log(response);
+                window.location.reload();
+            }
+        });
     }
 
     $('#btnAddOrUpdateTransaction').click(function (e){

@@ -10,4 +10,6 @@ public interface TransactionService {
 
 	List<TransactionDTO> findByCustomerId(Long customerId);
 	void saveTransaction(TransactionDTO transactionDTO);
+
+	TransactionDTO findById(Long id);
 }

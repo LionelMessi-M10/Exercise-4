@@ -45,4 +45,10 @@ public class CustomerAPI {
 	public void createTransaction(@RequestBody(required = true) TransactionDTO transactionDTO){
 		this.transactionService.saveTransaction(transactionDTO);
 	}
+
+	@GetMapping("/transaction/{id}")
+	public TransactionDTO loadTransaction(@PathVariable Long id){
+		TransactionDTO transactionDTO = this.transactionService.findById(id);
+		return transactionDTO;
+	}
 }

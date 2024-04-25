@@ -48,4 +48,9 @@ public class TransactionServiceImpl implements TransactionService {
 		this.transactionRepository.save(transactionEntity);
 	}
 
+	@Override
+	public TransactionDTO findById(Long id) {
+		return this.transactionConverter.convertToDTO(this.transactionRepository.findById(id).get());
+	}
+
 }
