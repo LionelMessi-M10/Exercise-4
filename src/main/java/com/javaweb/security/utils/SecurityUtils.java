@@ -10,8 +10,7 @@ import java.util.List;
 public class SecurityUtils {
 
     public static MyUserDetail getPrincipal() {
-        return (MyUserDetail) (SecurityContextHolder
-                .getContext()).getAuthentication().getPrincipal();
+        return (MyUserDetail) (SecurityContextHolder.getContext()).getAuthentication().getPrincipal();
     }
 
     public static List<String> getAuthorities() {

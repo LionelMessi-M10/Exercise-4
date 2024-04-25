@@ -115,8 +115,6 @@ public class BuildingRepositoryCustomImpl implements BuildingRepositoryCustom {
         sql.append(" LIMIT ").append(pageable.getPageSize()).append("\n")
                 .append(" OFFSET ").append(pageable.getOffset());
 
-        where.append(" GROUP BY b.id;");
-
         Query query = entityManager.createNativeQuery(sql.toString(), BuildingEntity.class);
 
         return query.getResultList();

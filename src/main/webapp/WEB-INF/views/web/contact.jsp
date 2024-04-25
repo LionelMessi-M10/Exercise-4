@@ -116,21 +116,21 @@
                 </div>
                 <div class="col-12 col-md-6">
                     <h2 class="title-lienhe"><strong>Liên hệ với chúng tôi</strong></h2>
-                    <form>
+                    <form:form action="/lien-he" modelAttribute="model" method="POST">
                         <div class="row">
                             <div class="col">
-                                <input type="text" class="form-control" placeholder="Họ và tên">
+                                <form:input type="text" class="form-control" placeholder="Họ và tên" path="name" required="Bạn chưa điền tên của mình"/>
                             </div>
                             <div class="col">
-                                <input type="text" class="form-control" placeholder="Email">
+                                <form:input type="text" class="form-control" placeholder="Email" path="email"/>
                             </div>
                         </div>
-                        <input type="text" class="form-control mt-3" placeholder="Số điện thoại">
-                        <input type="text" class="form-control mt-3" placeholder="Nội dung">
-                        <button class="btn btn-primary px-4 mt-3">
+                        <form:input type="text" class="form-control mt-3" placeholder="Số điện thoại" path="customerPhone" required="Bạn chưa điền số điện thoại của mình"/>
+                        <form:input type="text" class="form-control mt-3" placeholder="Nội dung" path="demand"/>
+                        <button type="submit" class="btn btn-primary px-4 mt-3">
                             Gửi liên hệ
                         </button>
-                    </form>
+                    </form:form>
                 </div>
             </div>
         </div>
@@ -158,7 +158,7 @@
                             </div>
                             <div class="col-12 col-md-4 text-center">
                                 <div class="icon-footer">
-                                    <img src="https://bizweb.dktcdn.net/100/328/362/themes/894751/assets/place_phone.png?1676257083798 alt="">
+                                    <img src="https://bizweb.dktcdn.net/100/328/362/themes/894751/assets/place_phone.png?1676257083798" alt="">
                                 </div>
                                 <div class="content-center-footer">
                                     <p class="mb-1 mt-3">Hotline</p>

@@ -29,14 +29,25 @@ public class UserEntity extends BaseEntity {
     @Column(name = "email", unique = true)
     private String email;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "role_id", nullable = false))
     private List<RoleEntity> roles = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "users", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     private List<BuildingEntity> buildingEntities = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "staffs", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    private List<CustomerEntity> customerEntities = new ArrayList<>();
+
+    public List<CustomerEntity> getCustomerEntities() {
+        return customerEntities;
+    }
+
+    public void setCustomerEntities(List<CustomerEntity> customerEntities) {
+        this.customerEntities = customerEntities;
+    }
 
     public List<BuildingEntity> getBuildingEntities() {
         return buildingEntities;
@@ -46,13 +57,9 @@ public class UserEntity extends BaseEntity {
         this.buildingEntities = buildingEntities;
     }
 
-    //    @OneToMany(mappedBy="users", fetch = FetchType.LAZY)
-//    private List<UserRoleEntity> userRoleEntities = new ArrayList<>();
-
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
-
 
     public String getUserName() {
         return userName;
