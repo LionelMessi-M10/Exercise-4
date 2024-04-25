@@ -6,6 +6,7 @@ import com.javaweb.model.dto.BuildingDTO;
 import com.javaweb.model.request.BuildingSearchRequest;
 import com.javaweb.model.response.BuildingSearchResponse;
 import com.javaweb.model.response.ResponseDTO;
+import com.javaweb.security.utils.SecurityUtils;
 import com.javaweb.service.BuildingService;
 import com.javaweb.service.impl.UserService;
 import com.javaweb.utils.DisplayTagUtils;
@@ -44,6 +45,8 @@ public class BuildingController {
         mav.addObject("listStaff", userService.getStaffs());
         mav.addObject("districts", District.type());
         mav.addObject("typeCodes", TypeCode.type());
+        mav.addObject("role", SecurityUtils.getAuthorities().get(0));
+
         return mav;
     }
 

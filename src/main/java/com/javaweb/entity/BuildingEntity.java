@@ -110,6 +110,7 @@ public class BuildingEntity extends BaseEntity{
 
     @Column(name = "image")
     private String image;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "buildingEntity", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true)
     private List<RentAreaEntity> rentAreaEntities = new ArrayList<>();
 

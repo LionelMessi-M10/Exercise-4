@@ -14,6 +14,7 @@ import com.javaweb.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Transactional
 	@Override
 	public void saveCustomer(CustomerDTO customerDTO) {
 		CustomerEntity customerEntity = this.customerConverter.convertToEntity(customerDTO);
@@ -81,6 +83,7 @@ public class CustomerServiceImpl implements CustomerService {
 		return responseDTO;
 	}
 
+	@Transactional
 	@Override
 	public void updateAssignmentCustomer(AssignmentCustomerDTO assignmentCustomerDTO) {
 		CustomerEntity customerEntity = this.customerRepository.findById(assignmentCustomerDTO.getCustomerId()).get();
@@ -90,6 +93,7 @@ public class CustomerServiceImpl implements CustomerService {
 		this.customerRepository.save(customerEntity);
 	}
 
+	@Transactional
 	@Override
 	public void deleteBuildingByIds(List<Long> ids) {
 		List<UserEntity> userEntities = userRepository.findByStatusAndRoles_Code(1, "STAFF");
