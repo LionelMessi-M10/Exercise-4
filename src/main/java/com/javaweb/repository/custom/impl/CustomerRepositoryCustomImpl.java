@@ -7,12 +7,15 @@ import com.javaweb.repository.UserRepository;
 import com.javaweb.repository.custom.CustomerRepositoryCustom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 @Repository
@@ -27,7 +30,13 @@ public class CustomerRepositoryCustomImpl implements CustomerRepositoryCustom {
 		if(customerDTO.getManagementStaff() != null && !customerDTO.getManagementStaff().isEmpty()){
 			sql.append(" INNER JOIN assignmentcustomer ac ON ac.customerid = c.id ");
 		}
-		if(userDetail.getAuthorities().equals("ROLE_STAFF")){
+		Collection<GrantedAuthority> authorities = userDetail.getAuthorities();
+		String authorityString = "";
+		Iterator<GrantedAuthority> iterator = authorities.iterator();
+		if (iterator.hasNext()) {
+			authorityString = iterator.next().toString();
+		}
+		if(authorityString.equals("ROLE_STAFF")){
 			if(customerDTO.getManagementStaff() == null || customerDTO.getManagementStaff().isEmpty()){
 				sql.append(" INNER JOIN assignmentcustomer ac ON ac.customerid = c.id ");
 			}
@@ -39,7 +48,13 @@ public class CustomerRepositoryCustomImpl implements CustomerRepositoryCustom {
 		if(customerDTO.getManagementStaff() != null && !customerDTO.getManagementStaff().isEmpty()){
 			sql.append(" AND ac.staffid = " + customerDTO.getManagementStaff());
 		}
-		if(userDetail.getAuthorities().equals("ROLE_STAFF")){
+		Collection<GrantedAuthority> authorities = userDetail.getAuthorities();
+		String authorityString = "";
+		Iterator<GrantedAuthority> iterator = authorities.iterator();
+		if (iterator.hasNext()) {
+			authorityString = iterator.next().toString();
+		}
+		if(authorityString.equals("ROLE_STAFF")){
 			sql.append(" AND u.username LIKE '%" + userDetail.getUsername() + "%' ");
 		}
 	}

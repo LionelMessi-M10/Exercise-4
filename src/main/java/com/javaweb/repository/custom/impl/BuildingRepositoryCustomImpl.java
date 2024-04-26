@@ -7,6 +7,7 @@ import com.javaweb.repository.UserRepository;
 import com.javaweb.repository.custom.BuildingRepositoryCustom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -14,6 +15,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +33,13 @@ public class BuildingRepositoryCustomImpl implements BuildingRepositoryCustom {
         if (staffId != null) {
             sql.append(" INNER JOIN assignmentbuilding asb ON asb.buildingid = b.id ");
         }
-        if(userDetail.getAuthorities().equals("ROLE_STAFF")){
+        Collection<GrantedAuthority> authorities = userDetail.getAuthorities();
+        String authorityString = "";
+        Iterator<GrantedAuthority> iterator = authorities.iterator();
+        if (iterator.hasNext()) {
+            authorityString = iterator.next().toString();
+        }
+        if(authorityString.equals("ROLE_STAFF")){
             if(staffId == null){
                 sql.append(" INNER JOIN assignmentbuilding asb ON asb.buildingid = b.id ");
             }
@@ -71,7 +80,13 @@ public class BuildingRepositoryCustomImpl implements BuildingRepositoryCustom {
         if (staffId != null) {
             where.append(" AND asb.staffid = " + staffId);
         }
-        if(userDetail.getAuthorities().equals("ROLE_STAFF")){
+        Collection<GrantedAuthority> authorities = userDetail.getAuthorities();
+        String authorityString = "";
+        Iterator<GrantedAuthority> iterator = authorities.iterator();
+        if (iterator.hasNext()) {
+            authorityString = iterator.next().toString();
+        }
+        if(authorityString.equals("ROLE_STAFF")){
             where.append(" AND u.username LIKE '%" + userDetail.getUsername() + "%' ");
         }
 
