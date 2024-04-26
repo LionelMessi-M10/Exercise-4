@@ -33,7 +33,7 @@ public class CustomerAPI {
 
 	@DeleteMapping("/{ids}")
 	public void deleteCustomer(@PathVariable("ids") List<Long> ids){
-		customerService.deleteBuildingByIds(ids);
+		customerService.deleteCustomerByIds(ids);
 	}
 
 	@PostMapping

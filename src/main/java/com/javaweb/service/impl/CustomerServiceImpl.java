@@ -6,6 +6,7 @@ import com.javaweb.entity.CustomerEntity;
 import com.javaweb.entity.UserEntity;
 import com.javaweb.model.dto.AssignmentCustomerDTO;
 import com.javaweb.model.dto.CustomerDTO;
+import com.javaweb.model.dto.MyUserDetail;
 import com.javaweb.model.response.ResponseDTO;
 import com.javaweb.model.response.StaffResponseDTO;
 import com.javaweb.repository.CustomerRepository;
@@ -33,24 +34,38 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public void saveCustomer(CustomerDTO customerDTO) {
 		CustomerEntity customerEntity = this.customerConverter.convertToEntity(customerDTO);
+		customerEntity.setIsActive(1);
 		this.customerRepository.save(customerEntity);
 	}
 
 	@Override
-	public List<CustomerDTO> searchCustomer(CustomerDTO customerDTO, Pageable pageable) {
+	public List<CustomerDTO> searchCustomer(MyUserDetail user, CustomerDTO customerDTO, Pageable pageable) {
 		List<CustomerEntity> customerEntities = this.customerRepository.searchCustomer(customerDTO, pageable);
+
+		UserEntity userEntity = this.userRepository.findOneByUserName(user.getUsername());
 
 		List<CustomerDTO> customerDTOS = new ArrayList<>();
 
-		for(CustomerEntity customerEntity : customerEntities) {
-			customerDTOS.add(this.customerConverter.convertToDto(customerEntity));
+		if(!user.getAuthorities().equals("ROLE_MANAGER")){
+			for(CustomerEntity customerEntity : customerEntities) {
+				if(customerEntity.getStaffs().contains(userEntity)) {
+					customerDTOS.add(this.customerConverter.convertToDto(customerEntity));
+				}
+				else customerDTOS.add(this.customerConverter.convertToDto(customerEntity));
+			}
 		}
+		else{
+			for(CustomerEntity customerEntity : customerEntities) {
+				customerDTOS.add(this.customerConverter.convertToDto(customerEntity));
+			}
+		}
+
 		return customerDTOS;
 	}
 
 	@Override
-	public Integer totalItems(CustomerDTO customerDTO) {
-		return this.customerRepository.totalSearchItems(customerDTO);
+	public Integer totalItems(MyUserDetail user, CustomerDTO customerDTO) {
+		return this.customerRepository.totalSearchItems(user, customerDTO);
 	}
 
 	@Override
@@ -95,18 +110,13 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Transactional
 	@Override
-	public void deleteBuildingByIds(List<Long> ids) {
+	public void deleteCustomerByIds(List<Long> ids) {
 		List<UserEntity> userEntities = userRepository.findByStatusAndRoles_Code(1, "STAFF");
 
 		for(Long id : ids){
 			CustomerEntity customerEntity = this.customerRepository.findById(id).get();
-			for(UserEntity userEntity : userEntities){
-				if(userEntity.getCustomerEntities().contains(customerEntity)){
-					userEntity.getCustomerEntities().remove(customerEntity);
-					userRepository.save(userEntity);
-				}
-			}
-			this.customerRepository.deleteById(id);
+			customerEntity.setIsActive(0);
+			this.customerRepository.save(customerEntity);
 		}
 	}
 

@@ -22,7 +22,7 @@
         <c:if test="${not empty customerEdit.id}">
           <li class="active">Chỉnh sửa khách hàng</li>
         </c:if>
-        <c:if test="${not empty customerEdit.id}">
+        <c:if test="${empty customerEdit.id}">
           <li class="active">Thêm khách hàng</li>
         </c:if>
       </ul><!-- /.breadcrumb -->
@@ -84,7 +84,14 @@
                 <div class="col-xs-2">
                   <form:select class="form-control" path="status">
                     <option value="">---Chọn tình trạng---</option>
-                    <form:options items="${statuses}"/>
+                    <c:forEach items="${statuses}" var="item">
+                      <c:if test="${item.value eq customerEdit.status}">
+                        <option value="${item.key}" selected>${item.value}</option>
+                      </c:if>
+                      <c:if test="${item.value != customerEdit.status}">
+                        <option value="${item.key}" >${item.value}</option>
+                      </c:if>
+                    </c:forEach>
                   </form:select>
                 </div>
               </div>
@@ -134,6 +141,12 @@
                     <tr>
                       <th>Ngày tạo</th>
                       <th>Người tạo</th>
+                      <c:if test="${not empty(transactions)}">
+                        <th>Ngày sửa</th>
+                      </c:if>
+                      <c:if test="${not empty(transactions)}">
+                        <th>Người sửa</th>
+                      </c:if>
                       <th>Chi tiết giao dịch</th>
                       <th>Thao tác</th>
                     </tr>
@@ -147,6 +160,14 @@
                             <fmt:formatDate value="${transaction.createdDate}" pattern="dd/MM/yyyy"/>
                           </td>
                           <td>${transaction.createdBy}</td>
+                          <c:if test="${not empty transaction.modifiedDate}">
+                            <td>
+                              <fmt:formatDate value="${transaction.modifiedDate}" pattern="dd/MM/yyyy"/>
+                            </td>
+                          </c:if>
+                          <c:if test="${not empty transaction.modifiedBy}">
+                            <td>${transaction.modifiedBy}</td>
+                          </c:if>
                           <td>${transaction.note}</td>
                           <td>
                             <button type="button" class="btn btn-xs btn-info" title="Sửa giao dich" onclick="updateTransactionType(${transaction.id})">
@@ -168,6 +189,12 @@
                   <tr>
                     <th>Ngày tạo</th>
                     <th>Người tạo</th>
+                    <c:if test="${not empty(transactions)}">
+                      <th>Ngày sửa</th>
+                    </c:if>
+                    <c:if test="${not empty(transactions)}">
+                      <th>Người sửa</th>
+                    </c:if>
                     <th>Chi tiết giao dịch</th>
                     <th>Thao tác</th>
                   </tr>
@@ -181,6 +208,14 @@
                           <fmt:formatDate value="${transaction.createdDate}" pattern="dd/MM/yyyy"/>
                         </td>
                         <td>${transaction.createdBy}</td>
+                        <c:if test="${not empty transaction.modifiedDate}">
+                          <td>
+                            <fmt:formatDate value="${transaction.modifiedDate}" pattern="dd/MM/yyyy"/>
+                          </td>
+                        </c:if>
+                        <c:if test="${not empty transaction.modifiedBy}">
+                          <td>${transaction.modifiedBy}</td>
+                        </c:if>
                         <td>${transaction.note}</td>
                         <td>
                           <button type="button" class="btn btn-xs btn-info" title="Sửa giao dich" onclick="updateTransactionType(${transaction.id})">

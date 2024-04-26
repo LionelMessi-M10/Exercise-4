@@ -3,6 +3,7 @@ package com.javaweb.controller.admin;
 import com.javaweb.enums.District;
 import com.javaweb.enums.TypeCode;
 import com.javaweb.model.dto.BuildingDTO;
+import com.javaweb.model.dto.MyUserDetail;
 import com.javaweb.model.request.BuildingSearchRequest;
 import com.javaweb.model.response.BuildingSearchResponse;
 import com.javaweb.model.response.ResponseDTO;
@@ -35,10 +36,11 @@ public class BuildingController {
         ModelAndView mav = new ModelAndView("admin/building/list");
 
         DisplayTagUtils.of(request, buildingSearchRequest);
-        List<BuildingSearchResponse> buildingSearchResponseList = buildingService.searchBuilding(buildingSearchRequest, PageRequest.of(buildingSearchRequest.getPage() - 1, buildingSearchRequest.getMaxPageItems()));
+        MyUserDetail userDetail = SecurityUtils.getPrincipal();
+        List<BuildingSearchResponse> buildingSearchResponseList = buildingService.searchBuilding(userDetail, buildingSearchRequest, PageRequest.of(buildingSearchRequest.getPage() - 1, buildingSearchRequest.getMaxPageItems()));
 
         buildingSearchRequest.setListResult(buildingSearchResponseList);
-        buildingSearchRequest.setTotalItems(buildingService.totalSearchItems(buildingSearchRequest));
+        buildingSearchRequest.setTotalItems(buildingService.totalSearchItems(userDetail, buildingSearchRequest));
 
         mav.addObject("modelSearch", buildingSearchRequest);
         mav.addObject("buildingList", buildingSearchResponseList);

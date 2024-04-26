@@ -6,6 +6,7 @@ import com.javaweb.entity.BuildingEntity;
 import com.javaweb.entity.UserEntity;
 import com.javaweb.enums.TypeCode;
 import com.javaweb.model.dto.BuildingDTO;
+import com.javaweb.model.dto.MyUserDetail;
 import com.javaweb.model.request.BuildingSearchRequest;
 import com.javaweb.model.response.BuildingSearchResponse;
 import com.javaweb.model.response.ResponseDTO;
@@ -104,21 +105,33 @@ public class BuildingServiceImpl implements BuildingService {
     }
 
     @Override
-    public Integer totalSearchItems(BuildingSearchRequest buildingSearchRequest) {
-        return buildingRepository.totalSearchItems(buildingSearchRequest);
+    public Integer totalSearchItems(MyUserDetail userDetail, BuildingSearchRequest buildingSearchRequest) {
+        return buildingRepository.totalSearchItems(userDetail, buildingSearchRequest);
     }
 
     @Override
-    public List<BuildingSearchResponse> searchBuilding(BuildingSearchRequest buildingSearchRequest, Pageable pageable) {
+    public List<BuildingSearchResponse> searchBuilding(MyUserDetail userDetail, BuildingSearchRequest buildingSearchRequest, Pageable pageable) {
 
         List<BuildingEntity> buildingEntities = buildingRepository.searchBuilding(buildingSearchRequest, pageable);
 
         List<BuildingSearchResponse> result = new ArrayList<>();
+        UserEntity userEntity = this.userRepository.findOneByUserName(userDetail.getUsername());
 
-        for(BuildingEntity it : buildingEntities){
-            BuildingSearchResponse buildingSearchResponse = buildingSearchResponseConverter.toBuildingSearchResponse(it);
-            result.add(buildingSearchResponse);
+        if(!userDetail.getAuthorities().equals("ROLE_MANAGER")){
+            for(BuildingEntity it : buildingEntities){
+                if(it.getUsers().contains(userEntity)){
+                    BuildingSearchResponse buildingSearchResponse = buildingSearchResponseConverter.toBuildingSearchResponse(it);
+                    result.add(buildingSearchResponse);
+                }
+            }
         }
+        else{
+            for(BuildingEntity it : buildingEntities){
+                BuildingSearchResponse buildingSearchResponse = buildingSearchResponseConverter.toBuildingSearchResponse(it);
+                result.add(buildingSearchResponse);
+            }
+        }
+
 
         return result;
     }

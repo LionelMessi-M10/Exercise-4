@@ -1,8 +1,11 @@
 package com.javaweb.repository.custom.impl;
 
 import com.javaweb.entity.BuildingEntity;
+import com.javaweb.model.dto.MyUserDetail;
 import com.javaweb.model.request.BuildingSearchRequest;
+import com.javaweb.repository.UserRepository;
 import com.javaweb.repository.custom.BuildingRepositoryCustom;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -10,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +21,8 @@ import java.util.stream.Collectors;
 public class BuildingRepositoryCustomImpl implements BuildingRepositoryCustom {
     @PersistenceContext
     private EntityManager entityManager;
+    @Autowired
+    private UserRepository userRepository;
 
     public static void joinTable(BuildingSearchRequest buildingSearchRequest, StringBuilder sql) {
         Long staffId = buildingSearchRequest.getStaffId();
@@ -120,7 +126,7 @@ public class BuildingRepositoryCustomImpl implements BuildingRepositoryCustom {
         return query.getResultList();
     }
 
-    public Integer totalSearchItems(BuildingSearchRequest buildingSearchRequest){
+    public Integer totalSearchItems(MyUserDetail userDetail, BuildingSearchRequest buildingSearchRequest){
         StringBuilder sql = new StringBuilder("SELECT b.* FROM building b");
 
         joinTable(buildingSearchRequest, sql);
@@ -136,7 +142,23 @@ public class BuildingRepositoryCustomImpl implements BuildingRepositoryCustom {
         Query query = entityManager.createNativeQuery(sql.toString(), BuildingEntity.class);
 
         List<BuildingEntity> buildingEntityList = query.getResultList();
-        return buildingEntityList.size();
+        List<BuildingEntity> result = new ArrayList<>();
+
+        if(!userDetail.getAuthorities().equals("ROLE_MANAGER")){
+            for(BuildingEntity it : buildingEntityList){
+                if(it.getUsers().contains(this.userRepository.findOneByUserName(userDetail.getUsername()))){
+                    result.add(it);
+                }
+                else result.add(it);
+            }
+        }
+        else{
+            for(BuildingEntity it : buildingEntityList){
+                result.add(it);
+            }
+        }
+
+        return result.size();
     }
 
 }

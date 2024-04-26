@@ -3,6 +3,7 @@ package com.javaweb.controller.admin;
 import com.javaweb.enums.Status;
 import com.javaweb.enums.TransactionType;
 import com.javaweb.model.dto.CustomerDTO;
+import com.javaweb.model.dto.MyUserDetail;
 import com.javaweb.model.dto.TransactionDTO;
 import com.javaweb.security.utils.SecurityUtils;
 import com.javaweb.service.CustomerService;
@@ -42,10 +43,11 @@ public class CustomerController {
 		ModelAndView mav = new ModelAndView("admin/customer/list");
 
 		DisplayTagUtils.of(request, customerDTO);
-		List<CustomerDTO> customers = this.customerService.searchCustomer(customerDTO, PageRequest.of(customerDTO.getPage() - 1, customerDTO.getMaxPageItems()));
+		MyUserDetail user = SecurityUtils.getPrincipal();
+		List<CustomerDTO> customers = this.customerService.searchCustomer(user, customerDTO, PageRequest.of(customerDTO.getPage() - 1, customerDTO.getMaxPageItems()));
 
 		customerDTO.setListResult(customers);
-		customerDTO.setTotalItems(this.customerService.totalItems(customerDTO));
+		customerDTO.setTotalItems(this.customerService.totalItems(user, customerDTO));
 
 		List<String> roles = SecurityUtils.getAuthorities();
 
