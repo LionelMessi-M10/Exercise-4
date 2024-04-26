@@ -141,13 +141,15 @@
 														<label class="name">SĐT quản lý</label>
 														<form:input type="text" class="form-control" path="managerPhone"/>
 													</div>
-													<div class="col-xs-4">
-														<label class="name">Chọn nhân viên</label>
-														<form:select class="form-control" path="staffId">
-															<option value="">---Chọn nhân viên---</option>
-															<form:options items="${listStaff}"/>
-														</form:select>
-													</div>
+													<c:if test="${role eq 'ROLE_MANAGER'}">
+														<div class="col-xs-4">
+															<label class="name">Chọn nhân viên</label>
+															<form:select class="form-control" path="staffId">
+																<option value="">---Chọn nhân viên---</option>
+																<form:options items="${listStaff}"/>
+															</form:select>
+														</div>
+													</c:if>
 												</div>
 											</div>
 
