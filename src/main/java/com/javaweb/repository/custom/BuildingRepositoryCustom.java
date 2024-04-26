@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface BuildingRepositoryCustom {
-    List<BuildingEntity> searchBuilding(BuildingSearchRequest buildingSearchRequest, Pageable pageable);
+    List<BuildingEntity> searchBuilding(MyUserDetail userDetail, BuildingSearchRequest buildingSearchRequest, Pageable pageable);
     Integer totalSearchItems(MyUserDetail userDetail, BuildingSearchRequest buildingSearchRequest);
 
 }

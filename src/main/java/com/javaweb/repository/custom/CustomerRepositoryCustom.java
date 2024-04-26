@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface CustomerRepositoryCustom {
-	List<CustomerEntity> searchCustomer(CustomerDTO customerDTO, Pageable pageable);
+	List<CustomerEntity> searchCustomer(MyUserDetail userDetail, CustomerDTO customerDTO, Pageable pageable);
 	Integer totalSearchItems(MyUserDetail user, CustomerDTO customerDTO);
 }

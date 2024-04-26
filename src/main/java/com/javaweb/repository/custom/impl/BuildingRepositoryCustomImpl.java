@@ -24,11 +24,17 @@ public class BuildingRepositoryCustomImpl implements BuildingRepositoryCustom {
     @Autowired
     private UserRepository userRepository;
 
-    public static void joinTable(BuildingSearchRequest buildingSearchRequest, StringBuilder sql) {
+    public static void joinTable(MyUserDetail userDetail, BuildingSearchRequest buildingSearchRequest, StringBuilder sql) {
         Long staffId = buildingSearchRequest.getStaffId();
 
         if (staffId != null) {
             sql.append(" INNER JOIN assignmentbuilding asb ON asb.buildingid = b.id ");
+        }
+        if(userDetail.getAuthorities().equals("ROLE_STAFF")){
+            if(staffId == null){
+                sql.append(" INNER JOIN assignmentbuilding asb ON asb.buildingid = b.id ");
+            }
+            sql.append(" INNER JOIN user u ON u.id = asb.staffid ");
         }
 
     }
@@ -60,10 +66,13 @@ public class BuildingRepositoryCustomImpl implements BuildingRepositoryCustom {
         }
     }
 
-    public static void querySpecial(BuildingSearchRequest buildingSearchRequest, StringBuilder where) {
+    public static void querySpecial(MyUserDetail userDetail, BuildingSearchRequest buildingSearchRequest, StringBuilder where) {
         Long staffId = buildingSearchRequest.getStaffId();
         if (staffId != null) {
             where.append(" AND asb.staffid = " + staffId);
+        }
+        if(userDetail.getAuthorities().equals("ROLE_STAFF")){
+            where.append(" AND u.username LIKE '%" + userDetail.getUsername() + "%' ");
         }
 
         Long rentAreaTo = buildingSearchRequest.getAreaTo();
@@ -106,15 +115,15 @@ public class BuildingRepositoryCustomImpl implements BuildingRepositoryCustom {
     }
 
     @Override
-    public List<BuildingEntity> searchBuilding(BuildingSearchRequest buildingSearchRequest, Pageable pageable) {
+    public List<BuildingEntity> searchBuilding(MyUserDetail userDetail, BuildingSearchRequest buildingSearchRequest, Pageable pageable) {
 
         StringBuilder sql = new StringBuilder("SELECT b.* FROM building b");
 
-        joinTable(buildingSearchRequest, sql);
+        joinTable(userDetail, buildingSearchRequest, sql);
 
         StringBuilder where = new StringBuilder(" WHERE 1 = 1 ");
         queryNormal(buildingSearchRequest, where);
-        querySpecial(buildingSearchRequest, where);
+        querySpecial(userDetail, buildingSearchRequest, where);
 
         sql.append(where);
 
@@ -129,11 +138,11 @@ public class BuildingRepositoryCustomImpl implements BuildingRepositoryCustom {
     public Integer totalSearchItems(MyUserDetail userDetail, BuildingSearchRequest buildingSearchRequest){
         StringBuilder sql = new StringBuilder("SELECT b.* FROM building b");
 
-        joinTable(buildingSearchRequest, sql);
+        joinTable(userDetail, buildingSearchRequest, sql);
 
         StringBuilder where = new StringBuilder(" WHERE 1 = 1 ");
         queryNormal(buildingSearchRequest, where);
-        querySpecial(buildingSearchRequest, where);
+        querySpecial(userDetail, buildingSearchRequest, where);
 
         sql.append(where);
 
@@ -141,24 +150,7 @@ public class BuildingRepositoryCustomImpl implements BuildingRepositoryCustom {
 
         Query query = entityManager.createNativeQuery(sql.toString(), BuildingEntity.class);
 
-        List<BuildingEntity> buildingEntityList = query.getResultList();
-        List<BuildingEntity> result = new ArrayList<>();
-
-        if(!userDetail.getAuthorities().equals("ROLE_MANAGER")){
-            for(BuildingEntity it : buildingEntityList){
-                if(it.getUsers().contains(this.userRepository.findOneByUserName(userDetail.getUsername()))){
-                    result.add(it);
-                }
-                else result.add(it);
-            }
-        }
-        else{
-            for(BuildingEntity it : buildingEntityList){
-                result.add(it);
-            }
-        }
-
-        return result.size();
+        return query.getResultList().size();
     }
 
 }

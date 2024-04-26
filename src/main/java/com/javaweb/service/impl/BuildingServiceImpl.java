@@ -112,26 +112,15 @@ public class BuildingServiceImpl implements BuildingService {
     @Override
     public List<BuildingSearchResponse> searchBuilding(MyUserDetail userDetail, BuildingSearchRequest buildingSearchRequest, Pageable pageable) {
 
-        List<BuildingEntity> buildingEntities = buildingRepository.searchBuilding(buildingSearchRequest, pageable);
+        List<BuildingEntity> buildingEntities = buildingRepository.searchBuilding(userDetail, buildingSearchRequest, pageable);
 
         List<BuildingSearchResponse> result = new ArrayList<>();
-        UserEntity userEntity = this.userRepository.findOneByUserName(userDetail.getUsername());
 
-        if(!userDetail.getAuthorities().equals("ROLE_MANAGER")){
-            for(BuildingEntity it : buildingEntities){
-                if(it.getUsers().contains(userEntity)){
-                    BuildingSearchResponse buildingSearchResponse = buildingSearchResponseConverter.toBuildingSearchResponse(it);
-                    result.add(buildingSearchResponse);
-                }
-            }
+        for(BuildingEntity it : buildingEntities){
+            BuildingSearchResponse buildingSearchResponse = buildingSearchResponseConverter.toBuildingSearchResponse(it);
+            result.add(buildingSearchResponse);
         }
-        else{
-            for(BuildingEntity it : buildingEntities){
-                BuildingSearchResponse buildingSearchResponse = buildingSearchResponseConverter.toBuildingSearchResponse(it);
-                result.add(buildingSearchResponse);
-            }
-        }
-        
+
         return result;
     }
 

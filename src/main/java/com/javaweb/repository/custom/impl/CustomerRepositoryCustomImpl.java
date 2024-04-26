@@ -23,15 +23,24 @@ public class CustomerRepositoryCustomImpl implements CustomerRepositoryCustom {
 	@Autowired
 	private UserRepository userRepository;
 
-	public void joinTable(CustomerDTO customerDTO, StringBuilder sql) {
+	public void joinTable(MyUserDetail userDetail, CustomerDTO customerDTO, StringBuilder sql) {
 		if(customerDTO.getManagementStaff() != null && !customerDTO.getManagementStaff().isEmpty()){
 			sql.append(" INNER JOIN assignmentcustomer ac ON ac.customerid = c.id ");
 		}
+		if(userDetail.getAuthorities().equals("ROLE_STAFF")){
+			if(customerDTO.getManagementStaff() == null || customerDTO.getManagementStaff().isEmpty()){
+				sql.append(" INNER JOIN assignmentcustomer ac ON ac.customerid = c.id ");
+			}
+			sql.append(" INNER JOIN user u ON u.id = ac.staffid ");
+		}
 	}
 
-	public void querySpecial(CustomerDTO customerDTO, StringBuilder sql) {
+	public void querySpecial(MyUserDetail userDetail, CustomerDTO customerDTO, StringBuilder sql) {
 		if(customerDTO.getManagementStaff() != null && !customerDTO.getManagementStaff().isEmpty()){
 			sql.append(" AND ac.staffid = " + customerDTO.getManagementStaff());
+		}
+		if(userDetail.getAuthorities().equals("ROLE_STAFF")){
+			sql.append(" AND u.username LIKE '%" + userDetail.getUsername() + "%' ");
 		}
 	}
 
@@ -48,13 +57,13 @@ public class CustomerRepositoryCustomImpl implements CustomerRepositoryCustom {
 	}
 
 	@Override
-	public List<CustomerEntity> searchCustomer(CustomerDTO customerDTO, Pageable pageable) {
+	public List<CustomerEntity> searchCustomer(MyUserDetail userDetail, CustomerDTO customerDTO, Pageable pageable) {
 		StringBuilder sql = new StringBuilder("SELECT c.* FROM customer c ");
 
-		joinTable(customerDTO, sql);
+		joinTable(userDetail, customerDTO, sql);
 
 		StringBuilder where = new StringBuilder(" WHERE 1 = 1 AND c.is_active = 1 ");
-		querySpecial(customerDTO, where);
+		querySpecial(userDetail, customerDTO, where);
 		queryNormal(customerDTO, where);
 
 		sql.append(where);
@@ -72,32 +81,17 @@ public class CustomerRepositoryCustomImpl implements CustomerRepositoryCustom {
 	public Integer totalSearchItems(MyUserDetail user, CustomerDTO customerDTO) {
 		StringBuilder sql = new StringBuilder("SELECT c.* FROM customer c ");
 
-		joinTable(customerDTO, sql);
+		joinTable(user, customerDTO, sql);
 
 		StringBuilder where = new StringBuilder(" WHERE 1 = 1 AND c.is_active = 1 ");
-		querySpecial(customerDTO, where);
+		querySpecial(user, customerDTO, where);
 		queryNormal(customerDTO, where);
 
 		sql.append(where);
 
 		Query query = entityManager.createNativeQuery(sql.toString(), CustomerEntity.class);
 
-		List<CustomerEntity> customerEntities = query.getResultList();
-		List<CustomerEntity> result = new ArrayList<>();
 
-		if(!user.getAuthorities().equals("ROLE_MANAGER")){
-			for(CustomerEntity customerEntity : customerEntities){
-				if(customerEntity.getStaffs().contains(this.userRepository.findOneByUserName(user.getUsername()))){
-					result.add(customerEntity);
-				}
-			}
-		}
-		else{
-			for(CustomerEntity customerEntity : customerEntities){
-				result.add(customerEntity);
-			}
-		}
-
-		return result.size();
+		return query.getResultList().size();
 	}
 }

@@ -40,23 +40,14 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public List<CustomerDTO> searchCustomer(MyUserDetail user, CustomerDTO customerDTO, Pageable pageable) {
-		List<CustomerEntity> customerEntities = this.customerRepository.searchCustomer(customerDTO, pageable);
+		List<CustomerEntity> customerEntities = this.customerRepository.searchCustomer(user, customerDTO, pageable);
 
 		UserEntity userEntity = this.userRepository.findOneByUserName(user.getUsername());
 
 		List<CustomerDTO> customerDTOS = new ArrayList<>();
 
-		if(!user.getAuthorities().equals("ROLE_MANAGER")){
-			for(CustomerEntity customerEntity : customerEntities) {
-				if(customerEntity.getStaffs().contains(userEntity)) {
-					customerDTOS.add(this.customerConverter.convertToDto(customerEntity));
-				}
-			}
-		}
-		else{
-			for(CustomerEntity customerEntity : customerEntities) {
-				customerDTOS.add(this.customerConverter.convertToDto(customerEntity));
-			}
+		for(CustomerEntity customerEntity : customerEntities) {
+			customerDTOS.add(this.customerConverter.convertToDto(customerEntity));
 		}
 
 		return customerDTOS;
