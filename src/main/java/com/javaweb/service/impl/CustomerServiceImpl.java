@@ -51,7 +51,6 @@ public class CustomerServiceImpl implements CustomerService {
 				if(customerEntity.getStaffs().contains(userEntity)) {
 					customerDTOS.add(this.customerConverter.convertToDto(customerEntity));
 				}
-				else customerDTOS.add(this.customerConverter.convertToDto(customerEntity));
 			}
 		}
 		else{

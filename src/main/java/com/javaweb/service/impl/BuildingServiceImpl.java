@@ -131,8 +131,7 @@ public class BuildingServiceImpl implements BuildingService {
                 result.add(buildingSearchResponse);
             }
         }
-
-
+        
         return result;
     }
 
