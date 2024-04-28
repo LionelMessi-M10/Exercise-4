@@ -8,7 +8,7 @@ import java.util.List;
 @Service
 public interface TransactionService {
 
-	List<TransactionDTO> findByCustomerId(Long customerId);
+	List<TransactionDTO> findByCustomerIdAndCode(Long customerId, String code);
 	void saveTransaction(TransactionDTO transactionDTO);
 
 	TransactionDTO findById(Long id);

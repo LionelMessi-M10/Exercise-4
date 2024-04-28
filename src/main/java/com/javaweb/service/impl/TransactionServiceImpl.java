@@ -21,10 +21,10 @@ public class TransactionServiceImpl implements TransactionService {
 	private TransactionConverter transactionConverter;
 
 	@Override
-	public List<TransactionDTO> findByCustomerId(Long customerId) {
+	public List<TransactionDTO> findByCustomerIdAndCode(Long customerId, String code) {
 		List<Long> ids = new ArrayList<>();
 		ids.add(customerId);
-		List<TransactionEntity> transactionEntities = this.transactionRepository.findByCustomerEntity_IdIn(ids);
+		List<TransactionEntity> transactionEntities = this.transactionRepository.findByCustomerEntity_IdInAndCode(ids, code);
 
 		List<TransactionDTO> transactionDTOS = new ArrayList<>();
 

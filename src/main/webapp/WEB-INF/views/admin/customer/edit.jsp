@@ -141,10 +141,10 @@
                     <tr>
                       <th>Ngày tạo</th>
                       <th>Người tạo</th>
-                      <c:if test="${not empty(transactions)}">
+                      <c:if test="${not empty(cskh)}">
                         <th>Ngày sửa</th>
                       </c:if>
-                      <c:if test="${not empty(transactions)}">
+                      <c:if test="${not empty(cskh)}">
                         <th>Người sửa</th>
                       </c:if>
                       <th>Chi tiết giao dịch</th>
@@ -153,7 +153,7 @@
                   </thead>
 
                   <tbody>
-                    <c:forEach var="transaction" items="${transactions}">
+                    <c:forEach var="transaction" items="${cskh}">
                       <c:if test="${transaction.code == 'CSKH'}">
                         <tr>
                           <td>
@@ -189,10 +189,10 @@
                   <tr>
                     <th>Ngày tạo</th>
                     <th>Người tạo</th>
-                    <c:if test="${not empty(transactions)}">
+                    <c:if test="${not empty(ddx)}">
                       <th>Ngày sửa</th>
                     </c:if>
-                    <c:if test="${not empty(transactions)}">
+                    <c:if test="${not empty(ddx)}">
                       <th>Người sửa</th>
                     </c:if>
                     <th>Chi tiết giao dịch</th>
@@ -201,7 +201,7 @@
                   </thead>
 
                   <tbody>
-                  <c:forEach var="transaction" items="${transactions}">
+                  <c:forEach var="transaction" items="${ddx}">
                     <c:if test="${transaction.code == 'DDX'}">
                       <tr>
                         <td>
