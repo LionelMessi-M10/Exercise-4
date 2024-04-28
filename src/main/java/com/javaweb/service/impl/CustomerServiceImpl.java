@@ -33,6 +33,9 @@ public class CustomerServiceImpl implements CustomerService {
 	@Transactional
 	@Override
 	public void saveCustomer(CustomerDTO customerDTO) {
+		if(customerDTO.getId() == null){
+			customerDTO.setStatus("CHUA_XU_LY");
+		}
 		CustomerEntity customerEntity = this.customerConverter.convertToEntity(customerDTO);
 		customerEntity.setIsActive(1);
 		this.customerRepository.save(customerEntity);

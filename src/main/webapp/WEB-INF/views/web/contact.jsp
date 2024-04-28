@@ -127,7 +127,7 @@
                         </div>
                         <form:input type="text" class="form-control mt-3" placeholder="Số điện thoại" path="customerPhone" required="Bạn chưa điền số điện thoại của mình"/>
                         <form:input type="text" class="form-control mt-3" placeholder="Nội dung" path="demand"/>
-                        <button type="submit" class="btn btn-primary px-4 mt-3">
+                        <button type="submit" class="btn btn-primary px-4 mt-3" onclick="alert('Gửi liên hệ thành công ! Chúng tôi sẽ phản hồi với bạn trong thời gian sớm nhất')">
                             Gửi liên hệ
                         </button>
                     </form:form>

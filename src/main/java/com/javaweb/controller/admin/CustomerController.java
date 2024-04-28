@@ -33,9 +33,8 @@ public class CustomerController {
 	private TransactionService transactionService;
 
 	@PostMapping("/lien-he")
-	public String saveCustomer(@ModelAttribute("model")CustomerDTO customerDTO){
+	public void saveCustomer(@ModelAttribute("model")CustomerDTO customerDTO){
 		this.customerService.saveCustomer(customerDTO);
-		return "redirect:/trang-chu";
 	}
 
 	@GetMapping("/admin/customer-list")
