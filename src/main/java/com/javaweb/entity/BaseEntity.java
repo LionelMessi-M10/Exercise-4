@@ -14,17 +14,15 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 public class BaseEntity implements Serializable {
 
-    private static final long serialVersionUID = -863164858986274318L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "createddate")
+    @Column(name = "createddate", updatable = false)
     @CreatedDate
     private Date createdDate;
 
-    @Column(name = "createdby")
+    @Column(name = "createdby", updatable = false)
     @CreatedBy
     private String createdBy;
 

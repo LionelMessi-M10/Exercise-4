@@ -1,9 +1,14 @@
 package com.javaweb.entity;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "transaction")
+@DynamicUpdate
+@DynamicInsert
 public class TransactionEntity extends BaseEntity {
 
 	@Column(name = "code")
@@ -49,5 +54,11 @@ public class TransactionEntity extends BaseEntity {
 
 	public void setCustomerEntity(CustomerEntity customerEntity) {
 		this.customerEntity = customerEntity;
+	}
+
+	@PrePersist
+	protected void onCreate() {
+		this.setModifiedDate(null);
+		this.setModifiedBy(null);
 	}
 }

@@ -165,8 +165,14 @@
                               <fmt:formatDate value="${transaction.modifiedDate}" pattern="dd/MM/yyyy"/>
                             </td>
                           </c:if>
+                          <c:if test="${empty transaction.modifiedDate}">
+                            <td></td>
+                          </c:if>
                           <c:if test="${not empty transaction.modifiedBy}">
                             <td>${transaction.modifiedBy}</td>
+                          </c:if>
+                          <c:if test="${empty transaction.modifiedBy}">
+                            <td></td>
                           </c:if>
                           <td>${transaction.note}</td>
                           <td>
@@ -213,8 +219,14 @@
                             <fmt:formatDate value="${transaction.modifiedDate}" pattern="dd/MM/yyyy"/>
                           </td>
                         </c:if>
+                        <c:if test="${empty transaction.modifiedDate}">
+                          <td></td>
+                        </c:if>
                         <c:if test="${not empty transaction.modifiedBy}">
                           <td>${transaction.modifiedBy}</td>
+                        </c:if>
+                        <c:if test="${empty transaction.modifiedBy}">
+                          <td></td>
                         </c:if>
                         <td>${transaction.note}</td>
                         <td>
